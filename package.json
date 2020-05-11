@@ -1,8 +1,9 @@
 {
-  "version": "2.16.1",
-  "name": "react-native-masonry-list",
-  "description": "An easy and simple to use React Native component to render a custom high performant masonry layout for images.  It uses a smart algorithm to sort the images evenly as possible according to the index position or fill in as soon as the image is fetched.  Includes support for both iOS and Android.  Free and made possible along with costly maintenance and updates by [Lue Hang](https://www.facebook.com/lue.hang) (the author).",
+  "version": "2.16.2",
+  "name": "snooper-masonry-list",
+  "description": "Updated version of react-native-masonry-list",
   "keywords": [
+    "react-native-snooper-mansory-list",
     "react-native-masonry-list",
     "react-native",
     "masonry",
@@ -17,20 +18,21 @@
     "LueHsoft",
     "LueH LABS",
     "Lue Hang",
-    "luehang"
+    "luehang",
+    "snooper"
   ],
-  "homepage": "https://luehangs.site/lue_hang/projects/react-native-masonry-list",
+  "homepage": "https://jukerstar.net",
   "author": {
-    "name": "Lue Hang",
-    "email": "lue_hang@hotmail.com",
-    "url": "https://www.luehangs.site"
+    "name": "George Ivanov",
+    "email": "ivanov@univ3rse.com",
+    "url": "https://ivanov.univ3rse.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Luehang/react-native-masonry-list"
+    "url": "https://github.com/CallMeHeisenberg/react-native-masonry-list"
   },
   "bugs": {
-    "url": "https://github.com/Luehang/react-native-masonry-list/issues"
+    "url": "https://github.com/CallMeHeisenberg/react-native-masonry-list/issues"
   },
   "directories": {
     "__tests__": "./__tests__",
@@ -50,11 +52,13 @@
   },
   "peerDependencies": {
     "react": "*",
-    "react-native": "*"
+    "react-native": "*",
+    "react-native-reanimated": "*"
   },
   "devDependencies": {
     "react": "16.6.3",
     "react-native": "0.58.4",
+    "react-native-reanimated": "^1.8.0",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "24.1.0",
     "jest": "24.1.0",

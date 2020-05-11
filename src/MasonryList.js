@@ -1,6 +1,7 @@
 import React from "react";
 import { FlatList, InteractionManager } from "react-native";
 import PropTypes from "prop-types";
+import Animated from "react-native-reanimated";
 
 import { resolveImage, resolveLocal } from "./lib/model";
 import Task from "./lib/task";
@@ -595,8 +596,9 @@ export default class MasonryList extends React.PureComponent {
 	}
 
 	render() {
+		const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 		return (
-			<FlatList
+			<AnimatedFlatList
 				style={{
 					flex: 1,
 					padding: (this.props.layoutDimensions.width / 100) * this.props.spacing / 2,
