@@ -4,6 +4,35 @@ import { setItemSource } from "./../utils";
 
 export const resolveImage = (uri, image, data, itemSource) => {
 	if (data && itemSource && itemSource.length > 0) {
+		if (image.dimensions && image.dimensions.width && image.dimensions.maxHeight) {
+			return new Task(
+				(reject, resolve) => {
+					Image.getSize(uri, (width, height) => {
+						image.ratio = height / width;
+						if (image.ratio > 1) {
+							let determinedHeightByRatio = image.dimensions.width * image.ratio;
+							if (determinedHeightByRatio > image.dimensions.maxHeight) {
+								determinedHeightByRatio = image.dimensions.maxHeight;
+							}
+							image.dimensions = {
+								width: image.dimensions.width,
+								height: determinedHeightByRatio
+							};
+						} else { // 1:1 ratio
+							image.dimensions = {
+								width: image.dimensions.width,
+								height: image.dimensions.width
+							};
+						}
+						const resolvedData = setItemSource(data, itemSource, image);
+						resolve({
+							...resolvedData,
+						});
+						// eslint-disable-next-line no-undef
+					}, (err) => reject(err));
+				}
+			);
+		}
 		return new Task(
 			(reject, resolve) => {
 				Image.getSize(uri, (width, height) => {
@@ -12,7 +41,7 @@ export const resolveImage = (uri, image, data, itemSource) => {
 					resolve({
 						...resolvedData,
 					});
-				// eslint-disable-next-line no-undef
+					// eslint-disable-next-line no-undef
 				}, (err) => reject(err));
 			}
 		);
