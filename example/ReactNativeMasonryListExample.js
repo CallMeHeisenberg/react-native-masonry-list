@@ -9,7 +9,7 @@ import {
     TouchableWithoutFeedback,
     Image,
 } from "react-native";
-import MasonryList from "react-native-masonry-list";
+import MasonryList from "snooper-masonry-list";
 // import MasonryList from "./src";
 
 import testData from "./data";
