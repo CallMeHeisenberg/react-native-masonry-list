@@ -8,22 +8,7 @@ export const resolveImage = (uri, image, data, itemSource) => {
 			return new Task(
 				(reject, resolve) => {
 					Image.getSize(uri, (width, height) => {
-						image.ratio = height / width;
-						if (image.ratio > 1) {
-							let determinedHeightByRatio = image.dimensions.width * image.ratio;
-							if (determinedHeightByRatio > image.dimensions.maxHeight) {
-								determinedHeightByRatio = image.dimensions.maxHeight;
-							}
-							image.dimensions = {
-								width: image.dimensions.width,
-								height: determinedHeightByRatio
-							};
-						} else { // 1:1 ratio
-							image.dimensions = {
-								width: image.dimensions.width,
-								height: image.dimensions.width
-							};
-						}
+						image.dimensions = resolveDimensions({width, height});
 						const resolvedData = setItemSource(data, itemSource, image);
 						resolve({
 							...resolvedData,
@@ -46,14 +31,43 @@ export const resolveImage = (uri, image, data, itemSource) => {
 			}
 		);
 	}
+	if (image.dimensions && image.dimensions.width && image.dimensions.maxHeight) {
+		return new Task((reject, resolve) => Image.getSize(uri, (width, height) => resolve({
+			...image,
+			dimensions: resolveDimensions({width, height})
+			// eslint-disable-next-line no-undef
+		}), (err) => reject(err)));
+	}
+
 	return new Task((reject, resolve) => Image.getSize(uri, (width, height) => resolve({
 		...image,
 		dimensions: {
 			width,
 			height
 		}
-	// eslint-disable-next-line no-undef
+		// eslint-disable-next-line no-undef
 	}), (err) => reject(err)));
+};
+
+const resolveDimensions = (dimensions) => {
+	const ratio = dimensions.height / dimensions.width;
+	if (ratio > 1) {
+		let determinedHeightByRatio = dimensions.width * ratio;
+		if (determinedHeightByRatio > dimensions.maxHeight) {
+			determinedHeightByRatio = dimensions.maxHeight;
+		}
+		dimensions = {
+			width: dimensions.width,
+			height: determinedHeightByRatio
+		};
+	} else { // 1:1 ratio
+		dimensions = {
+			width: dimensions.width,
+			height: dimensions.width
+		};
+	}
+
+	return dimensions;
 };
 
 export const resolveLocal = (image, data, itemSource) => {
@@ -64,7 +78,7 @@ export const resolveLocal = (image, data, itemSource) => {
 				resolve({
 					...resolvedData
 				});
-			// eslint-disable-next-line no-undef
+				// eslint-disable-next-line no-undef
 			}, (err) => reject(err));
 		}
 		if (image.width && image.height) {
@@ -74,7 +88,7 @@ export const resolveLocal = (image, data, itemSource) => {
 				resolve({
 					...resolvedData
 				});
-			// eslint-disable-next-line no-undef
+				// eslint-disable-next-line no-undef
 			}, (err) => reject(err));
 		}
 	}
@@ -83,7 +97,7 @@ export const resolveLocal = (image, data, itemSource) => {
 			resolve({
 				...image
 			});
-		// eslint-disable-next-line no-undef
+			// eslint-disable-next-line no-undef
 		}, (err) => reject(err));
 	}
 	if (image.width && image.height) {
@@ -95,7 +109,7 @@ export const resolveLocal = (image, data, itemSource) => {
 					height: image.height
 				}
 			});
-		// eslint-disable-next-line no-undef
+			// eslint-disable-next-line no-undef
 		}, (err) => reject(err));
 	}
 };
