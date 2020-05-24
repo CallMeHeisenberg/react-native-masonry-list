@@ -15,7 +15,7 @@ class Masonry extends React.PureComponent {
 
     static propTypes = {
         itemSource: PropTypes.array,
-        images: PropTypes.array,
+        data: PropTypes.array,
         containerWidth: PropTypes.number,
 
         columns: PropTypes.number,
@@ -61,11 +61,11 @@ class Masonry extends React.PureComponent {
         onEndReachedThreshold: PropTypes.number,
         refreshing: PropTypes.bool,
         onRefresh: PropTypes.func
-    }
+    };
 
     static defaultProps = {
         itemSource: [],
-        images: [],
+        data: [],
         columns: 2,
         initialColToRender: null,
         initialNumInColsToRender: 1,
@@ -74,7 +74,7 @@ class Masonry extends React.PureComponent {
         backgroundColor: "#fff",
         imageContainerStyle: {},
         rerender: false
-    }
+    };
 
     constructor(props) {
         super(props);
@@ -179,8 +179,8 @@ class Masonry extends React.PureComponent {
     render() {
         if (
             this.props.emptyView &&
-            Array.isArray(this.props.images) &&
-            this.props.images.length === 0
+            Array.isArray(this.props.data) &&
+            this.props.data.length === 0
         ) {
             if (isReactComponent(this.props.emptyView)) {
                 return React.createElement(this.props.emptyView);
@@ -217,7 +217,7 @@ class Masonry extends React.PureComponent {
                     //         this.props.masonryListRef(component);
                     // }}
 
-                    images={this.props.images}
+                    data={this.props.data}
                     columns={this.props.columns}
                     spacing={this.props.spacing}
                     initialColToRender={this.props.initialColToRender}

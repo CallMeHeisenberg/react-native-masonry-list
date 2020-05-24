@@ -76,11 +76,11 @@ export function insertIntoColumn (resolvedImage, dataSet, sorted) {
 	const column = dataSet[columnIndex];
 
 	if (column) {
-		let images = [...column, resolvedImage];
+		let data = [...column, resolvedImage];
 		if (sorted) {
-			images = images.sort((a, b) => (a.index < b.index) ? -1 : 1);
+			data = data.sort((a, b) => (a.index < b.index) ? -1 : 1);
 		}
-		dataCopy[columnIndex] = images;
+		dataCopy[columnIndex] = data;
 	} else {
 		dataCopy = [...dataCopy, [resolvedImage]];
 	}

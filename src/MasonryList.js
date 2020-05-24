@@ -22,7 +22,7 @@ export default class MasonryList extends React.PureComponent {
 
 	static propTypes = {
 		itemSource: PropTypes.array,
-		images: PropTypes.array.isRequired,
+		data: PropTypes.array.isRequired,
 		layoutDimensions: PropTypes.object.isRequired,
 		containerWidth: PropTypes.number,
 
@@ -84,7 +84,7 @@ export default class MasonryList extends React.PureComponent {
 			if (this.props.containerWidth) {
 				this.resolveImages(
 					this.props.itemSource,
-					this.props.images,
+					this.props.data,
 					this.props.layoutDimensions,
 					this.props.columns,
 					this.props.sorted
@@ -106,7 +106,7 @@ export default class MasonryList extends React.PureComponent {
 				this.columnHighestHeight = null;
 				this.resolveImages(
 					nextProps.itemSource,
-					nextProps.images,
+					nextProps.data,
 					nextProps.layoutDimensions,
 					nextProps.columns,
 					nextProps.sorted
@@ -130,28 +130,14 @@ export default class MasonryList extends React.PureComponent {
 					nextProps.sorted
 				);
 		}
-		// else if (nextProps.images !== this.props.images) {
-		// 	this.unsortedIndex = 0;
-		// 	this.renderIndex = 0;
-		// 	this.columnHeightTotals = [];
-		// 	this.columnCounting = 1;
-		// 	this.columnHighestHeight = null;
-		// 	this.resolveImages(
-		// 		nextProps.itemSource,
-		// 		nextProps.images,
-		// 		nextProps.layoutDimensions,
-		// 		nextProps.columns,
-		// 		nextProps.sorted
-		// 	);
-		// }
 
 		if (!this.props.rerender) {
 			// load more add datasource
-			if (nextProps.images.length > this.props.images.length) {
-				let newImages = nextProps.images.concat().splice(this.props.images.length, nextProps.images.length); // nextProps.images
+			if (nextProps.data.length > this.props.data.length) {
+				let newData = nextProps.data.concat().splice(this.props.data.length, nextProps.data.length);
 				this.resolveImages(
 					nextProps.itemSource,
-					newImages,
+					newData,
 					nextProps.layoutDimensions,
 					nextProps.columns,
 					nextProps.sorted
@@ -159,7 +145,7 @@ export default class MasonryList extends React.PureComponent {
 			}
 
 			// pull refresh reset datasource
-			if (nextProps.images.length < this.props.images.length) {
+			if (nextProps.data.length < this.props.data.length) {
 					this.unsortedIndex = 0;
 					this.renderIndex = 0;
 					this.columnHeightTotals = [];
@@ -168,14 +154,14 @@ export default class MasonryList extends React.PureComponent {
 				// this.renderIndex = 0;
 				this.resolveImages(
 					nextProps.itemSource,
-					nextProps.images,
+					nextProps.data,
 					nextProps.layoutDimensions,
 					nextProps.columns,
 					nextProps.sorted
 				);
 			}
 		} else {
-			if (nextProps.images !== this.props.images) {
+			if (nextProps.data !== this.props.data) {
 				this.unsortedIndex = 0;
 				this.renderIndex = 0;
 				this.columnHeightTotals = [];
@@ -183,14 +169,14 @@ export default class MasonryList extends React.PureComponent {
 				this.columnHighestHeight = null;
 				this.resolveImages(
 					nextProps.itemSource,
-					nextProps.images,
+					nextProps.data,
 					nextProps.layoutDimensions,
 					nextProps.columns,
 					nextProps.sorted
 				);
 			}
 		}
-	}
+	};
 
 	_getCalculatedDimensions(imgDimensions = { width: 0, height: 0 }, columnWidth = 0, gutterSize = 0) {
 		const countDecimals = function (value) {
@@ -217,7 +203,7 @@ export default class MasonryList extends React.PureComponent {
 
 	resolveImages(
 		itemSource = this.props.itemSource,
-		images = this.props.images,
+		data = this.props.data,
 		layoutDimensions = this.props.layoutDimensions,
 		columns = this.props.columns,
 		sorted = this.props.sorted
@@ -245,8 +231,8 @@ export default class MasonryList extends React.PureComponent {
 			return columnIndex;
 		}
 
-		if (images && itemSource.length > 0) {
-			const resolveImages = images
+		if (data && itemSource.length > 0) {
+			const resolveImages = data
 				.map((item) => {
 					const image = getItemSource(item, itemSource);
 					const source = getImageSource(image);
@@ -254,14 +240,6 @@ export default class MasonryList extends React.PureComponent {
 
 					if (source) {
 						image.source = source;
-					} else {
-						/* eslint-disable no-console */
-						console.warn(
-							"react-native-masonry-list",
-							"Please provide a valid image field in " +
-							"data images. Ex. source, uri, URI, url, URL"
-						);
-						/* eslint-enable no-console */
 					}
 
 					if (image.dimensions && image.dimensions.width && image.dimensions.height) {
@@ -296,7 +274,7 @@ export default class MasonryList extends React.PureComponent {
 						this.doneTotal++;
 						if (
 							this.props.onImagesResolveEnd &&
-							this.doneTotal === this.props.images.length
+							this.doneTotal === this.props.data.length
 						) {
 							this.props.onImagesResolveEnd(this.state._sortedData, this.doneTotal);
 						}
@@ -345,7 +323,7 @@ export default class MasonryList extends React.PureComponent {
 							this.doneTotal++;
 							if (
 								this.props.onImagesResolveEnd &&
-								this.doneTotal === this.props.images.length
+								this.doneTotal === this.props.data.length
 							) {
 								this.props.onImagesResolveEnd(this.state._sortedData, this.doneTotal);
 							}
@@ -362,7 +340,7 @@ export default class MasonryList extends React.PureComponent {
 								this.doneTotal++;
 								if (
 									this.props.onImagesResolveEnd &&
-									this.doneTotal === this.props.images.length
+									this.doneTotal === this.props.data.length
 								) {
 									this.props.onImagesResolveEnd(this.state._sortedData, this.doneTotal);
 								}
@@ -409,7 +387,7 @@ export default class MasonryList extends React.PureComponent {
 								this.doneTotal++;
 								if (
 									this.props.onImagesResolveEnd &&
-									this.doneTotal === this.props.images.length
+									this.doneTotal === this.props.data.length
 								) {
 									this.props.onImagesResolveEnd(this.state._sortedData, this.doneTotal);
 								}
@@ -418,22 +396,14 @@ export default class MasonryList extends React.PureComponent {
 				});
 			}
 
-		} else if (images) {
-			const resolveImages = images
+		} else if (data) {
+			const resolveImages = data
 				.map((image) => {
 					const source = getImageSource(image);
 					const uri = getImageUri(image);
 
 					if (source) {
 						image.source = source;
-					} else {
-						/* eslint-disable no-console */
-						console.warn(
-							"react-native-masonry-list",
-							"Please provide a valid image field in " +
-							"data images. Ex. source, uri, URI, url, URL"
-						);
-						/* eslint-enable no-console */
 					}
 
 					if (image.dimensions && image.dimensions.width && image.dimensions.height) {
@@ -468,7 +438,7 @@ export default class MasonryList extends React.PureComponent {
 						this.doneTotal++;
 						if (
 							this.props.onImagesResolveEnd &&
-							this.doneTotal === this.props.images.length
+							this.doneTotal === this.props.data.length
 						) {
 							this.props.onImagesResolveEnd(this.state._sortedData, this.doneTotal);
 						}
@@ -514,7 +484,7 @@ export default class MasonryList extends React.PureComponent {
 							this.doneTotal++;
 							if (
 								this.props.onImagesResolveEnd &&
-								this.doneTotal === this.props.images.length
+								this.doneTotal === this.props.data.length
 							) {
 								this.props.onImagesResolveEnd(this.state._sortedData, this.doneTotal);
 							}
@@ -531,7 +501,7 @@ export default class MasonryList extends React.PureComponent {
 								this.doneTotal++;
 								if (
 									this.props.onImagesResolveEnd &&
-									this.doneTotal === this.props.images.length
+									this.doneTotal === this.props.data.length
 								) {
 									this.props.onImagesResolveEnd(this.state._sortedData, this.doneTotal);
 								}
@@ -574,7 +544,7 @@ export default class MasonryList extends React.PureComponent {
 								this.doneTotal++;
 								if (
 									this.props.onImagesResolveEnd &&
-									this.doneTotal === this.props.images.length
+									this.doneTotal === this.props.data.length
 								) {
 									this.props.onImagesResolveEnd(this.state._sortedData, this.doneTotal);
 								}

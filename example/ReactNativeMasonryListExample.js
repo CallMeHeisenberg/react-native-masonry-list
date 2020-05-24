@@ -126,7 +126,7 @@ export default class ReactNativeMasonryListExample extends React.Component {
                     </TouchableWithoutFeedback>
                 </View>
                 <MasonryList
-                    images={testData}
+                    data={testData}
                     columns={this.state.columns}
                     // sorted={true}
                     renderIndividualHeader={(data) => {
