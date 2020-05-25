@@ -566,9 +566,8 @@ export default class MasonryList extends React.PureComponent {
 	}
 
 	render() {
-		const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 		return (
-			<AnimatedFlatList
+			<FlatList
 				style={{
 					flex: 1,
 					padding: (this.props.layoutDimensions.width / 100) * this.props.spacing / 2,
@@ -578,6 +577,7 @@ export default class MasonryList extends React.PureComponent {
 					flexDirection: "row",
 					width: "100%"
 				}, this.props.listContainerStyle]}
+				renderScrollComponent={this.props.renderScrollComponent}
 				removeClippedSubviews={true}
 				onEndReachedThreshold={this.props.onEndReachedThreshold}
 				refreshing={this.props.refreshing}
