@@ -1,12 +1,12 @@
 import React from "react";
-import { FlatList, InteractionManager } from "react-native";
+import {InteractionManager } from "react-native";
 import PropTypes from "prop-types";
-import Animated from "react-native-reanimated";
 
 import { resolveImage, resolveLocal } from "./lib/model";
 import Task from "./lib/task";
 import { sequence } from "./lib/monad-basic";
 
+import FlatList from "./Animated/FlatList";
 import Column from "./Column";
 
 import {
