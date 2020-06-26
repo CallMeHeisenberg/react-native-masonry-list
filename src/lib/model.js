@@ -49,7 +49,7 @@ export const resolveImage = (uri, image, data, itemSource) => {
 	}), (err) => reject(err)));
 };
 
-const resolveDimensions = (dimensions) => {
+export const resolveDimensions = (dimensions) => {
 	const ratio = dimensions.height / dimensions.width;
 	if (ratio > 1) {
 		let determinedHeightByRatio = dimensions.width * ratio;

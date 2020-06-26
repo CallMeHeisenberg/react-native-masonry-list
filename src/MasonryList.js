@@ -2,7 +2,7 @@ import React from "react";
 import {InteractionManager } from "react-native";
 import PropTypes from "prop-types";
 
-import { resolveImage, resolveLocal } from "./lib/model";
+import { resolveImage, resolveLocal, resolveDimensions } from "./lib/model";
 import Task from "./lib/task";
 import { sequence } from "./lib/monad-basic";
 
@@ -63,8 +63,8 @@ export default class MasonryList extends React.PureComponent {
 
 		onEndReached: PropTypes.func,
 		onEndReachedThreshold: PropTypes.number,
-        refreshing: PropTypes.bool,
-        onRefresh: PropTypes.func
+		refreshing: PropTypes.bool,
+		onRefresh: PropTypes.func
 	};
 
 	state = {
@@ -99,36 +99,35 @@ export default class MasonryList extends React.PureComponent {
 			nextProps.layoutDimensions.width !== this.props.layoutDimensions.width &&
 			nextProps.layoutDimensions.height !== this.props.layoutDimensions.height &&
 			!this.props.containerWidth) {
-				this.unsortedIndex = 0;
-				this.renderIndex = 0;
-				this.columnHeightTotals = [];
-				this.columnCounting = 1;
-				this.columnHighestHeight = null;
-				this.resolveImages(
-					nextProps.itemSource,
-					nextProps.data,
-					nextProps.layoutDimensions,
-					nextProps.columns,
-					nextProps.sorted
-				);
-		}
-		else if (nextProps.orientation !== this.props.orientation ||
+			this.unsortedIndex = 0;
+			this.renderIndex = 0;
+			this.columnHeightTotals = [];
+			this.columnCounting = 1;
+			this.columnHighestHeight = null;
+			this.resolveImages(
+				nextProps.itemSource,
+				nextProps.data,
+				nextProps.layoutDimensions,
+				nextProps.columns,
+				nextProps.sorted
+			);
+		} else if (nextProps.orientation !== this.props.orientation ||
 			nextProps.columns !== this.props.columns ||
 			nextProps.spacing !== this.props.spacing ||
 			nextProps.sorted !== this.props.sorted ||
 			nextProps.containerWidth !== this.props.containerWidth) {
-				this.unsortedIndex = 0;
-				this.renderIndex = 0;
-				this.columnHeightTotals = [];
-				this.columnCounting = 1;
-				this.columnHighestHeight = null;
-				this.resolveImages(
-					nextProps.itemSource,
-					this._calculatedData,
-					nextProps.layoutDimensions,
-					nextProps.columns,
-					nextProps.sorted
-				);
+			this.unsortedIndex = 0;
+			this.renderIndex = 0;
+			this.columnHeightTotals = [];
+			this.columnCounting = 1;
+			this.columnHighestHeight = null;
+			this.resolveImages(
+				nextProps.itemSource,
+				this._calculatedData,
+				nextProps.layoutDimensions,
+				nextProps.columns,
+				nextProps.sorted
+			);
 		}
 
 		if (!this.props.rerender) {
@@ -146,11 +145,11 @@ export default class MasonryList extends React.PureComponent {
 
 			// pull refresh reset datasource
 			if (nextProps.data.length < this.props.data.length) {
-					this.unsortedIndex = 0;
-					this.renderIndex = 0;
-					this.columnHeightTotals = [];
-					this.columnCounting = 1;
-					this.columnHighestHeight = null;
+				this.unsortedIndex = 0;
+				this.renderIndex = 0;
+				this.columnHeightTotals = [];
+				this.columnCounting = 1;
+				this.columnHighestHeight = null;
 				// this.renderIndex = 0;
 				this.resolveImages(
 					nextProps.itemSource,
@@ -178,7 +177,7 @@ export default class MasonryList extends React.PureComponent {
 		}
 	};
 
-	_getCalculatedDimensions(imgDimensions = { width: 0, height: 0 }, columnWidth = 0, gutterSize = 0) {
+	_getCalculatedDimensions(imgDimensions = {width: 0, height: 0}, columnWidth = 0, gutterSize = 0) {
 		const countDecimals = function (value) {
 			if (Math.floor(value) === value) {
 				return 0;
@@ -198,7 +197,7 @@ export default class MasonryList extends React.PureComponent {
 			? parseFloat(tempHeight.toFixed(10))
 			: tempHeight;
 
-		return { width: newWidth, height: newHeight, gutter: gutterSize, margin: gutterSize / 2 };
+		return {width: newWidth, height: newHeight, gutter: gutterSize, margin: gutterSize / 2};
 	}
 
 	resolveImages(
@@ -210,9 +209,10 @@ export default class MasonryList extends React.PureComponent {
 	) {
 		// eslint-disable-next-line consistent-this
 		let resolverObj = this;
+
 		function _assignColumns(image, nColumns) {
 			const columnIndex = resolverObj.columnCounting - 1;
-			const { height } = image.masonryDimensions;
+			const {height} = image.masonryDimensions;
 
 			if (!resolverObj.columnHeightTotals[resolverObj.columnCounting - 1]) {
 				resolverObj.columnHeightTotals[resolverObj.columnCounting - 1] = height;
@@ -229,6 +229,19 @@ export default class MasonryList extends React.PureComponent {
 			}
 
 			return columnIndex;
+		}
+
+		function resolveImageDimensions(data) {
+			return Promise.all(data.map(image => {
+				return fetch(image.source.uri.slice(0, -4) + ".json")
+					.then(res => res.json())
+					.then(({width, height}) => {
+						image.dimensions = resolveDimensions({width, height});
+						return image;
+					}).catch(err => {
+						return image;
+					});
+			}));
 		}
 
 		if (data && itemSource.length > 0) {
@@ -397,89 +410,42 @@ export default class MasonryList extends React.PureComponent {
 			}
 
 		} else if (data) {
-			const resolveImages = data
-				.map((image) => {
-					const source = getImageSource(image);
-					const uri = getImageUri(image);
+			resolveImageDimensions(data).then(r => r.map((image) => {
+				const source = getImageSource(image);
+				const uri = getImageUri(image);
 
-					if (source) {
-						image.source = source;
-					}
+				if (source) {
+					image.source = source;
+				}
 
-					if (image.dimensions && image.dimensions.width && image.dimensions.height) {
-						return resolveLocal(image);
-					}
+				if (image.dimensions && image.dimensions.width && image.dimensions.height) {
+					return resolveLocal(image);
+				}
 
-					if (image.width && image.height) {
-						return resolveLocal(image);
-					}
+				if (image.width && image.height) {
+					return resolveLocal(image);
+				}
 
-					if (uri) {
-						return resolveImage(uri, image);
-					} else {
-						/* eslint-disable no-console */
-						console.warn(
-							"react-native-masonry-list",
-							"Please provide dimensions for your local images."
-						);
-						/* eslint-enable no-console */
-					}
-				});
-			if (sorted) {
-				sequence(Task, resolveImages.map((resolveTask) => {
-					if (resolveTask && resolveTask.fork) {
-						return resolveTask;
-					}
-				})).fork(
-					(err) => {
-						// eslint-disable-next-line handle-callback-err, no-console
-						console.warn("react-native-masonry-list", "Image failed to load.", err);
-
-						this.doneTotal++;
-						if (
-							this.props.onImagesResolveEnd &&
-							this.doneTotal === this.props.data.length
-						) {
-							this.props.onImagesResolveEnd(this.state._sortedData, this.doneTotal);
+				if (uri) {
+					return resolveImage(uri, image);
+				} else {
+					/* eslint-disable no-console */
+					console.warn(
+						"react-native-masonry-list",
+						"Please provide dimensions for your local images."
+					);
+					/* eslint-enable no-console */
+				}
+			})).then((resolveImages) => {
+				if (sorted) {
+					sequence(Task, resolveImages.map((resolveTask) => {
+						if (resolveTask && resolveTask.fork) {
+							return resolveTask;
 						}
-					},
-					(resolvedImages) => {
-						resolvedImages.map((resolvedImage, index) => {
-							if (this.renderIndex !== 0) {
-								index = this.renderIndex;
-							}
-							resolvedImage.index = index;
-
-							resolvedImage.masonryDimensions =
-								this._getCalculatedDimensions(
-									resolvedImage.dimensions,
-									layoutDimensions.columnWidth,
-									layoutDimensions.gutterSize
-								);
-
-							resolvedImage.column = _assignColumns(resolvedImage, columns);
-
-							if (this.props.onImageResolved) {
-								resolvedImage = this.props.onImageResolved(resolvedImage, this.renderIndex) || resolvedImage;
-							}
-
-							if (this.renderIndex !== 0) {
-								this.setState((state) => {
-									const sortedData = insertIntoColumn(resolvedImage, state._sortedData, sorted);
-									this._calculatedData = this._calculatedData.concat(resolvedImage);
-									this.renderIndex++;
-									return {
-										_sortedData: sortedData
-									};
-								});
-							} else {
-								const sortedData = insertIntoColumn(resolvedImage, [], sorted);
-								this._calculatedData = [resolvedImage];
-								this.renderIndex++;
-								this.setState({
-									_sortedData: sortedData
-								});
-							}
+					})).fork(
+						(err) => {
+							// eslint-disable-next-line handle-callback-err, no-console
+							console.warn("react-native-masonry-list", "Image failed to load.", err);
 
 							this.doneTotal++;
 							if (
@@ -488,27 +454,13 @@ export default class MasonryList extends React.PureComponent {
 							) {
 								this.props.onImagesResolveEnd(this.state._sortedData, this.doneTotal);
 							}
-						});
-					});
-			} else {
-				resolveImages.map((resolveTask) => {
-					if (resolveTask && resolveTask.fork) {
-						resolveTask.fork(
-							(err) => {
-								// eslint-disable-next-line handle-callback-err, no-console
-								console.warn("react-native-masonry-list", "Image failed to load.", err);
-
-								this.doneTotal++;
-								if (
-									this.props.onImagesResolveEnd &&
-									this.doneTotal === this.props.data.length
-								) {
-									this.props.onImagesResolveEnd(this.state._sortedData, this.doneTotal);
+						},
+						(resolvedImages) => {
+							resolvedImages.map((resolvedImage, index) => {
+								if (this.renderIndex !== 0) {
+									index = this.renderIndex;
 								}
-							},
-							(resolvedImage) => {
-								resolvedImage.index = this.unsortedIndex;
-								this.unsortedIndex++;
+								resolvedImage.index = index;
 
 								resolvedImage.masonryDimensions =
 									this._getCalculatedDimensions(
@@ -549,11 +501,73 @@ export default class MasonryList extends React.PureComponent {
 									this.props.onImagesResolveEnd(this.state._sortedData, this.doneTotal);
 								}
 							});
-					}
-				});
-			}
+						});
+				} else {
+					resolveImages.map((resolveTask) => {
+						if (resolveTask && resolveTask.fork) {
+							resolveTask.fork(
+								(err) => {
+									// eslint-disable-next-line handle-callback-err, no-console
+									console.warn("react-native-masonry-list", "Image failed to load.", err);
+
+									this.doneTotal++;
+									if (
+										this.props.onImagesResolveEnd &&
+										this.doneTotal === this.props.data.length
+									) {
+										this.props.onImagesResolveEnd(this.state._sortedData, this.doneTotal);
+									}
+								},
+								(resolvedImage) => {
+									resolvedImage.index = this.unsortedIndex;
+									this.unsortedIndex++;
+
+									resolvedImage.masonryDimensions =
+										this._getCalculatedDimensions(
+											resolvedImage.dimensions,
+											layoutDimensions.columnWidth,
+											layoutDimensions.gutterSize
+										);
+
+									resolvedImage.column = _assignColumns(resolvedImage, columns);
+
+									if (this.props.onImageResolved) {
+										resolvedImage = this.props.onImageResolved(resolvedImage, this.renderIndex) || resolvedImage;
+									}
+
+									if (this.renderIndex !== 0) {
+										this.setState((state) => {
+											const sortedData = insertIntoColumn(resolvedImage, state._sortedData, sorted);
+											this._calculatedData = this._calculatedData.concat(resolvedImage);
+											this.renderIndex++;
+											return {
+												_sortedData: sortedData
+											};
+										});
+									} else {
+										const sortedData = insertIntoColumn(resolvedImage, [], sorted);
+										this._calculatedData = [resolvedImage];
+										this.renderIndex++;
+										this.setState({
+											_sortedData: sortedData
+										});
+									}
+
+									this.doneTotal++;
+									if (
+										this.props.onImagesResolveEnd &&
+										this.doneTotal === this.props.data.length
+									) {
+										this.props.onImagesResolveEnd(this.state._sortedData, this.doneTotal);
+									}
+								});
+						}
+					});
+				}
+			});
 		}
 	}
+
 
 	// (info: {distanceFromEnd: number}) => void
 	_onCallEndReach = (info) => {
@@ -563,7 +577,7 @@ export default class MasonryList extends React.PureComponent {
 		} else if (this.props.onEndReached) {
 			this.props.onEndReached(info);
 		}
-	}
+	};
 
 	render() {
 		return (
@@ -593,7 +607,7 @@ export default class MasonryList extends React.PureComponent {
 					return "COLUMN-" + index.toString() + "/"; // + (this.props.columns - 1);
 				}}
 				data={this.state._sortedData}
-				renderItem={({ item, index }) => {
+				renderItem={({item, index}) => {
 					return (
 						<Column
 							data={item}
