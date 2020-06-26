@@ -1,6 +1,6 @@
 {
   "version": "3.0.7",
-  "name": "@snooperapp/masonry-list",
+  "name": "@snooper/masonry-list",
   "private": false,
   "description": "Updated version for fitting Snooper app of react-native-masonry-list",
   "keywords": [
@@ -37,7 +37,7 @@
     "README.md"
   ],
   "dependencies": {
-    "prop-types": "^15.6.2"
+    "prop-types": "^15.7.2"
   },
   "peerDependencies": {
     "react": "*",
@@ -65,8 +65,5 @@
     "lint": "eslint src/",
     "test": "jest"
   },
-  "license": "MIT",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
-  }
+  "license": "MIT"
 }
