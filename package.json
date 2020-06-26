@@ -64,5 +64,6 @@
     "lint": "eslint src/",
     "test": "jest"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" }
 }
