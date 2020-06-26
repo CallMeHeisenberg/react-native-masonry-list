@@ -233,6 +233,7 @@ export default class MasonryList extends React.PureComponent {
 
 		function resolveImageDimensions(data) {
 			return Promise.all(data.map(image => {
+				if (!image || !image.source.uri || !image.dimensions.minHeight || image.dimensions.maxHeight) return image;
 				return fetch(image.source.uri.slice(0, -4) + ".json")
 					.then(res => res.json())
 					.then(({width, height}) => {
