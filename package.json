@@ -1,5 +1,5 @@
 {
-  "version": "3.0.4",
+  "version": "3.0.5",
   "name": "@snooperapp/masonry-list",
   "description": "Updated version for fitting Snooper app of react-native-masonry-list",
   "keywords": [
@@ -65,5 +65,7 @@
     "test": "jest"
   },
   "license": "MIT",
-  "publishConfig": { "registry": "https://npm.pkg.github.com/" }
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  }
 }
