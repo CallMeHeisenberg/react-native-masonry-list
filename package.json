@@ -1,6 +1,6 @@
 {
   "version": "3.0.2",
-  "name": "snooper-masonry-list",
+  "name": "@snooper/masonry-list",
   "description": "Updated version for fitting Snooper app of react-native-masonry-list",
   "keywords": [
     "react-native-snooper-mansory-list",
@@ -17,21 +17,16 @@
     "snooper"
   ],
   "homepage": "https://jukerstar.net",
-  "author": {
-    "name": "George Ivanov",
-    "email": "ivanov@univ3rse.com",
-    "url": "https://ivanov.univ3rse.com"
-  },
+  "author": "George Ivanov <ivanov@univ3rse.com> (https://ivanov.univ3rse.com)",
   "repository": {
     "type": "git",
-    "url": "https://github.com/CallMeHeisenberg/react-native-masonry-list"
+    "url": "git+https://github.com/snooperapp/masonry-list.git"
   },
   "bugs": {
-    "url": "https://github.com/CallMeHeisenberg/react-native-masonry-list/issues"
+    "url": "https://github.com/snooperapp/masonry-list/issues"
   },
   "directories": {
-    "example": "./example",
-    "src": "./src"
+    "example": "example"
   },
   "main": "./src/index.js",
   "files": [
@@ -66,7 +61,7 @@
     "react-test-renderer": "^16.12.0"
   },
   "scripts": {
-    "lint": "./node_modules/.bin/eslint src/",
+    "lint": "eslint src/",
     "test": "jest"
   },
   "license": "MIT"
