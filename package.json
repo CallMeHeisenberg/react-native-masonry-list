@@ -42,7 +42,8 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-reanimated": "*"
+    "react-native-reanimated": "*",
+    "react-native-fast-image": "*"
   },
   "devDependencies": {
     "babel-core": "^7.0.0-bridge.0",
