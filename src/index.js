@@ -102,29 +102,29 @@ class Masonry extends React.PureComponent {
         if (!nextProps.containerWidth && !this.props.containerWidth) {
             if (nextProps.columns !== this.props.columns ||
                 nextProps.spacing !== this.props.spacing) {
-                    this._setColumnDimensions(
-                        {
-                            height: this.state.layoutDimensions.height,
-                            width: this.state.layoutDimensions.width
-                        },
-                        nextProps.columns,
-                        nextProps.spacing
-                    );
+                this._setColumnDimensions(
+                    {
+                        height: this.state.layoutDimensions.height,
+                        width: this.state.layoutDimensions.width
+                    },
+                    nextProps.columns,
+                    nextProps.spacing
+                );
             }
         } else if (nextProps.containerWidth || this.props.containerWidth) {
             if (nextProps.containerWidth !== this.props.containerWidth ||
                 nextProps.columns !== this.props.columns ||
                 nextProps.spacing !== this.props.spacing) {
-                    this.setState({
-                        layoutDimensions: {
-                            width: nextProps.containerWidth,
-                            gutterSize: (nextProps.containerWidth / 100) * nextProps.spacing,
-                            columnWidth: nextProps.containerWidth / nextProps.columns
-                        }
-                    });
+                this.setState({
+                    layoutDimensions: {
+                        width: nextProps.containerWidth,
+                        gutterSize: (nextProps.containerWidth / 100) * nextProps.spacing,
+                        columnWidth: nextProps.containerWidth / nextProps.columns
+                    }
+                });
             }
         }
-	}
+    }
 
     _layoutChange = (ev) => {
         const { width, height } = ev.nativeEvent.layout;
@@ -184,18 +184,16 @@ class Masonry extends React.PureComponent {
         ) {
             if (isReactComponent(this.props.emptyView)) {
                 return React.createElement(this.props.emptyView);
-            }
-            else if (typeof this.props.emptyView === "function") {
+            } else if (typeof this.props.emptyView === "function") {
                 return this.props.emptyView();
-            }
-            else if (isElement(this.props.emptyView)) {
+            } else if (isElement(this.props.emptyView)) {
                 return this.props.emptyView;
             }
         }
 
         return (
             <View style={
-                    !this.props.containerWidth
+                !this.props.containerWidth
                         ? {flex: 1}
                         : {flex: 1, width: this.props.containerWidth}
                 }
@@ -204,7 +202,7 @@ class Masonry extends React.PureComponent {
                         this._setParentDimensions(event, this.props.columns, this.props.spacing);
                         this._layoutChange(event);
                     }
-                }}>
+                  }}>
                 <MasonryList
                     layoutDimensions={this.state.layoutDimensions}
                     containerWidth={this.props.containerWidth}

@@ -52,18 +52,18 @@ export const resolveImage = (uri, image, data, itemSource) => {
 export const resolveDimensions = (dimensions) => {
 	const ratio = dimensions.height / dimensions.width;
 	if (ratio > 1) {
-		let determinedHeightByRatio = dimensions.width * ratio;
+		let determinedHeightByRatio = dimensions.maxWidth * ratio;
 		if (determinedHeightByRatio > dimensions.maxHeight) {
 			determinedHeightByRatio = dimensions.maxHeight;
 		}
 		dimensions = {
-			width: dimensions.width,
+			width: dimensions.maxWidth,
 			height: determinedHeightByRatio
 		};
 	} else { // 1:1 ratio
 		dimensions = {
-			width: dimensions.width,
-			height: dimensions.width
+			width: dimensions.maxWidth,
+			height: dimensions.maxWidth
 		};
 	}
 

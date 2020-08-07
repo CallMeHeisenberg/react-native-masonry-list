@@ -220,13 +220,22 @@ export default class MasonryList extends React.PureComponent {
 				resolverObj.columnHeightTotals[resolverObj.columnCounting - 1] = resolverObj.columnHeightTotals[resolverObj.columnCounting - 1] + height;
 			}
 
-			if (!resolverObj.columnHighestHeight) {
-				resolverObj.columnHighestHeight = resolverObj.columnHeightTotals[resolverObj.columnCounting - 1];
-				resolverObj.columnCounting = resolverObj.columnCounting < nColumns ? resolverObj.columnCounting + 1 : 1;
-			} else if (resolverObj.columnHighestHeight <= resolverObj.columnHeightTotals[resolverObj.columnCounting - 1]) {
-				resolverObj.columnHighestHeight = resolverObj.columnHeightTotals[resolverObj.columnCounting - 1];
-				resolverObj.columnCounting = resolverObj.columnCounting < nColumns ? resolverObj.columnCounting + 1 : 1;
-			}
+			resolverObj.columnHighestHeight = resolverObj.columnHeightTotals[resolverObj.columnCounting - 1];
+			resolverObj.columnCounting = resolverObj.columnCounting < nColumns ? resolverObj.columnCounting + 1 : 1;
+
+			// if (resolverObj.columnCounting < nColumns){
+			// 	resolverObj.columnHighestHeight = resolverObj.columnHeightTotals[resolverObj.columnCounting - 1];
+			// 	resolverObj.columnCounting = resolverObj.columnCounting < nColumns ? resolverObj.columnCounting + 1 : 1;
+			// }
+			// else {
+			// 	if (!resolverObj.columnHighestHeight) {
+			// 		resolverObj.columnHighestHeight = resolverObj.columnHeightTotals[resolverObj.columnCounting - 1];
+			// 		resolverObj.columnCounting = resolverObj.columnCounting < nColumns ? resolverObj.columnCounting + 1 : 1;
+			// 	} else if (resolverObj.columnHighestHeight <= resolverObj.columnHeightTotals[resolverObj.columnCounting - 1]) {
+			// 		resolverObj.columnHighestHeight = resolverObj.columnHeightTotals[resolverObj.columnCounting - 1];
+			// 		resolverObj.columnCounting = resolverObj.columnCounting < nColumns ? resolverObj.columnCounting + 1 : 1;
+			// 	}
+			// }
 
 			return columnIndex;
 		}
@@ -237,7 +246,9 @@ export default class MasonryList extends React.PureComponent {
 				return fetch(image.source.uri.slice(0, -4) + ".json")
 					.then(res => res.json())
 					.then(({width, height}) => {
-						image.dimensions = resolveDimensions({width, height});
+						const { minHeight, maxHeight } = image.dimensions;
+
+						image.dimensions = resolveDimensions({width, height, maxWidth: image.dimensions.width, minHeight, maxHeight});
 						return image;
 					}).catch(err => {
 						return image;
