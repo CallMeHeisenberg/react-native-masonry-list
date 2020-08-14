@@ -12,7 +12,7 @@
   "dependencies": {
     "react": "16.11.0",
     "react-native": "^0.62.2",
-    "snooper-masonry-list": "^2.16.2"
+    "@snooper/masonry-list": "^3.0.9"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",
