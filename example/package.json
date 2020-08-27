@@ -12,7 +12,8 @@
   "dependencies": {
     "react": "16.11.0",
     "react-native": "^0.62.2",
-    "@snooper/masonry-list": "^3.0.9"
+    "react-native-safe-area-view": "^1.1.1",
+    "react-native-safe-area-context": "^3.1.7"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",
